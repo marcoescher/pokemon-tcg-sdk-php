@@ -3,6 +3,11 @@
 namespace Pokemon\Resources;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use League\Flysystem\Adapter\Local;
+use Kevinrob\GuzzleCache\CacheMiddleware;
+use Kevinrob\GuzzleCache\Strategy\GreedyCacheStrategy;
+use Kevinrob\GuzzleCache\Storage\FlysystemStorage;
 use GuzzleHttp\Psr7\Request;
 use Pokemon\Pokemon;
 use Pokemon\Resources\Interfaces\ResourceInterface;
@@ -40,7 +45,21 @@ class JsonResource implements ResourceInterface
      */
     public function __construct($uri, array $options = [])
     {
+        $stack = HandlerStack::create();
+        $stack->push(
+          new CacheMiddleware(
+            new GreedyCacheStrategy(
+              new FlysystemStorage(
+                new Local("./cache/api")
+              ),
+              86400
+            )
+          ), 
+          "cache"
+        );
+
         $defaults = [
+            'handler'  => $stack,
             'base_uri' => Pokemon::API_URL,
             'verify'   => false,
         ];

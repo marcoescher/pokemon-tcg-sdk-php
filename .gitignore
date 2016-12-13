@@ -4,3 +4,4 @@ composer.lock
 
 # PhpStorm
 .idea
+/src/.DS_Store
