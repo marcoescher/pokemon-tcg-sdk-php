@@ -6,6 +6,7 @@ use Pokemon\Resources\Interfaces\QueriableResourceInterface;
 use Pokemon\Resources\Interfaces\ResourceInterface;
 use Pokemon\Resources\JsonResource;
 use Pokemon\Resources\QueriableResource;
+use Pokemon\Resources\CustomQueriableResource;
 
 /**
  * Class Pokemon
@@ -85,7 +86,12 @@ class Pokemon
     {
         if (!array_key_exists($type, self::$cache['resources']) || self::haveOptionsBeenUpdated($type, $options)) {
             self::$cache['options'][$type] = $options;
-            self::$cache['resources'][$type] = new QueriableResource($type, $options);
+            if($options["custom"]){
+                unset($options["custom"]);
+                self::$cache['resources'][$type] = new CustomQueriableResource($type, $options);
+            }else{
+                self::$cache['resources'][$type] = new QueriableResource($type, $options);
+            }
         }
         return self::$cache['resources'][$type];
     }
