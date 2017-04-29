@@ -52,7 +52,7 @@ class JsonResource implements ResourceInterface
               new FlysystemStorage(
                 new Local("./cache/api")
               ),
-              86400
+              2628000
             )
           ), 
           "cache"
